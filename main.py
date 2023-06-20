@@ -18,47 +18,49 @@ URL = ["https://ion.inapi.cl/Marca/BuscarMarca.aspx",
 numeroSolicitud = 1236216
 
 with HTMLSession() as s:
-  response0 = s.get(URL[0], headers=headers)
-  response0.html.render(timeout=20)
+    response0 = s.get(URL[0], headers=headers)
+    response0.html.render(timeout=20)
+    
+    print(response0.reason)
 
-  hdnIDW0 = response0.html.find('#hdnIDW', first=True).attrs['value']
-  hdnHash0 = response0.html.find('#hdnHash', first=True).attrs['value']
+    # hdnIDW0 = response0.html.find('#hdnIDW', first=True).attrs['value']
+    # hdnHash0 = response0.html.find('#hdnHash', first=True).attrs['value']
 
-  # print(hdnIDW0)
-  # print(hdnHash0)
+    # print(hdnIDW0)
+    # print(hdnHash0)
 
-  # cookies = s.cookies.get_dict()
+    # cookies = s.cookies.get_dict()
 
-  # dataToPOST1["Hash"] = hdnHash0
-  # dataToPOST1["IDW"] = hdnIDW0
-  # dataToPOST1["param2"] = numeroSolicitud
+    # dataToPOST1["Hash"] = hdnHash0
+    # dataToPOST1["IDW"] = hdnIDW0
+    # dataToPOST1["param2"] = numeroSolicitud
 
-  # response1 = s.post(URL[1], headers=headers, json=dataToPOST1)
+    # response1 = s.post(URL[1], headers=headers, json=dataToPOST1)
 
-  # hdnIDW1 = response1.html.find('#hdnIDW', first=True)
-  # hdnHash1 = response1.html.find('#hdnHash', first=True)
+    # hdnIDW1 = response1.html.find('#hdnIDW', first=True)
+    # hdnHash1 = response1.html.find('#hdnHash', first=True)
 
-  # print(hdnIDW1)
-  # print(hdnHash1)
-  # json_data = json.loads(response1.json()['d'])
+    # print(hdnIDW1)
+    # print(hdnHash1)
+    # json_data = json.loads(response1.json()['d'])
 
-  # hdnHash1 = json_data['Hash']
-  # hdnSolicitud = json_data['Marcas'][0]['id']
+    # hdnHash1 = json_data['Hash']
+    # hdnSolicitud = json_data['Marcas'][0]['id']
 
-  # print(response1.status_code)
-  # print(json.dumps(json_data, indent=4))
+    # print(response1.status_code)
+    # print(json.dumps(json_data, indent=4))
 
-  # dataToPOST2["Hash"] = hdnHash1
-  # dataToPOST2["IDW"] = hdnIDW0
-  # dataToPOST2["numeroSolicitud"] = hdnSolicitud
+    # dataToPOST2["Hash"] = hdnHash1
+    # dataToPOST2["IDW"] = hdnIDW0
+    # dataToPOST2["numeroSolicitud"] = hdnSolicitud
 
-  # response2 = s.post(URL[2], headers=headers, json=dataToPOST2)
+    # response2 = s.post(URL[2], headers=headers, json=dataToPOST2)
 
-  # print(response2.status_code)
+    # print(response2.status_code)
 
-  # response_data = response2.json()['d']
-  # json_data = json.loads(response_data)
+    # response_data = response2.json()['d']
+    # json_data = json.loads(response_data)
 
-  # json_formatted_str = json.dumps(json_data['Marca']['Instancias'], indent=4, ensure_ascii=True)
+    # json_formatted_str = json.dumps(json_data['Marca']['Instancias'], indent=4, ensure_ascii=True)
 
-  # print(json_formatted_str)
+    # print(json_formatted_str)

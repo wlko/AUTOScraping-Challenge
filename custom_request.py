@@ -1,18 +1,54 @@
 from requests_html import HTMLSession
+from random import choice
 
 class HTTPRequests:
 
-    def __init__(self, headers:dict):
+    def __init__(self, headers:dict, proxy:bool = False, proxy_list:dict | list = None):
+        self.proxy = proxy
         self.session = HTMLSession()
         self.headers = headers
-
+        # Definiendo proxies a utilizar
+        if proxy:
+            # Tipos de proxies segun configuración pasado por el usuario (lista o API)
+            if proxy_list is dict:
+                self.proxies = proxy_list
+            else:
+                self.proxies = self.__get_random_proxy(proxy_list)
+    
     def get(self, url:str):
-        response = self.session.get(url, headers=self.headers)
+        # Si se utiliza proxy, se intentará la petición hasta que se obtenga una respuesta 200
+        while True:
+            if self.proxy:
+                proxy_used = self.proxies
+                response = self.session.get(url, headers=self.headers, proxies=proxy_used)
+                print(f"Proxy: {proxy_used}")
+                print(response.status_code, response.reason)
+            else:
+                response = self.session.get(url, headers=self.headers)
+                print(response.status_code, response.reason)            
+            if response.status_code == 200:
+                break
+
         response.html.render(timeout=20)
         return response.text
             
     def post(self, url:str, data:dict):
-        return self.session.post(url, headers=self.headers, json=data)
+        while True:
+            if self.proxy:
+                proxy_used = self.proxies
+                response = self.session.post(url, headers=self.headers, json=data, proxies=proxy_used)
+                print(f"Proxy: {proxy_used}")
+                print(response.status_code, response.reason)
+            else:
+                response = self.session.post(url, headers=self.headers, json=data)
+                print(response.status_code, response.reason)
+            if response.status_code == 200:
+                break
+        return response
+    
+    def __get_random_proxy(proxy_list:list):
+        return {"https": choice(proxy_list)}
+        
 
 
 # def concurrent_requests (

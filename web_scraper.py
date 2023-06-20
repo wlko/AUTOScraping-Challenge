@@ -32,10 +32,6 @@ class WebScraper(MiniScraper):
         response = self.session.post(
             url="https://ion.inapi.cl/Marca/BuscarMarca.aspx/FindMarcaByNumeroSolicitud",
             data=self.__setData(dataToPOST2, nroRegistro=nroRegisto)
-
         )
         data_json = response.json()['d']
         return json.loads(data_json)
-        
-
-        
