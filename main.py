@@ -19,15 +19,6 @@ URL = ["https://ion.inapi.cl/Marca/BuscarMarca.aspx",
        "https://ion.inapi.cl/Marca/BuscarMarca.aspx/FindMarcas",
        "https://ion.inapi.cl/Marca/BuscarMarca.aspx/FindMarcaByNumeroSolicitud"]
 
-cookies = {
-    'ASP.NET_SessionId': '5jvnqbbd42hipwjnans0ph1r',
-    'pnctest': '1',
-    '_gid': 'GA1.2.111741820.1686768550',
-    '_gat': '1',
-    '_gat_gtag_UA_55154893_3': '1',
-    '_ga_B2C27FPMYG': 'GS1.1.1686867269.18.1.1686868075.0.0.0',
-    '_ga': 'GA1.1.657243374.1686515091',
-}
 headers = {
     'Accept': 'application/json, text/javascript, */*; q=0.01',
     'Accept-Language': 'es-ES,es;q=0.9,en;q=0.8',
@@ -46,8 +37,8 @@ headers = {
     'sec-ch-ua-platform': '"Windows"',
 }
 
-with HTMLSession() as s:   
-  response0 = s.get(URL[0], headers=headers, cookies=cookies)
+with HTMLSession() as s:
+  response0 = s.get(URL[0], headers=headers)
   response0.html.render(timeout=20)
 
   hdnIDW0 = response0.html.find('#hdnIDW', first=True).attrs['value']
@@ -55,6 +46,8 @@ with HTMLSession() as s:
 
   # print(hdnIDW0)
   # print(hdnHash0)
+
+  cookies = s.cookies.get_dict()
 
   dataToPOST1 = {
     "LastNumSol": 0,
@@ -80,20 +73,20 @@ with HTMLSession() as s:
     "param17": "1"
   }
 
-  response1 = s.post(URL[1], headers=headers, json=dataToPOST1, cookies=cookies)
+  response1 = s.post(URL[1], headers=headers, json=dataToPOST1)
 
   # hdnIDW1 = response1.html.find('#hdnIDW', first=True)
   # hdnHash1 = response1.html.find('#hdnHash', first=True)
 
   # print(hdnIDW1)
   # print(hdnHash1)
-  response_data = response1.json()['d']
-  json_data = json.loads(response_data)
+  json_data = json.loads(response1.json()['d'])
 
   hdnHash1 = json_data['Hash']
   hdnSolicitud = json_data['Marcas'][0]['id']
 
   print(response1.status_code)
+  print(json.dumps(json_data, indent=4))
 
   dataToPOST2 = {
   "numeroSolicitud": hdnSolicitud,
@@ -101,7 +94,7 @@ with HTMLSession() as s:
   "IDW": hdnIDW0
   }
 
-  response2 = s.post(URL[2], headers=headers, json=dataToPOST2, cookies=cookies)
+  response2 = s.post(URL[2], headers=headers, json=dataToPOST2)
 
   print(response2.status_code)
 
@@ -111,41 +104,3 @@ with HTMLSession() as s:
   json_formatted_str = json.dumps(json_data['Marca']['Instancias'], indent=4, ensure_ascii=True)
 
   print(json_formatted_str)
-  
-# Con Selenium puedo hacer multiples peticiones mantiendo la sesión
-# Me aseguro consiguiendo el IDW que se mantiene constante durante la sesión
-# Pero no puedo hacer peticiones POST con Selenium para las llamadas subsiguientes
-
-# Necesario para renderizar el HTML
-# driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
-# driver.maximize_window()
-# driver.get(URL[0])
-
-# soup = BeautifulSoup(driver.page_source, 'html.parser')
-
-# print(soup.find('input', {"id":"hdnIDW"})['value'])
-# print(soup.find('input', {"id":"hdnHash"})['value'])
-# print(driver)
-
-# driver.get(URL[1])
-
-# print(soup.find('input', {"id":"hdnIDW"})['value'])
-# print(soup.find('input', {"id":"hdnHash"})['value'])
-
-
-# Buscando patrones para ver como intervienen los parametros HASH y IDW en las llamadas:
-# <input id="hdnHash" type="hidden" value="3c1161197d02f8226b6aa52eb225b7f1">
-# <input id="hdnIDW" type="hidden" value="638223680851630035">
-
-# <input id="hdnHash" type="hidden" value="3b8b80dacbe071f8c4ee85b812b0bde7">
-# <input id="hdnIDW" type="hidden" value="638223680851630035">
-
-# <input id="hdnHash" type="hidden" value="b824805b8c05c690da4cc3e9aaf38f95">
-# <input id="hdnIDW" type="hidden" value="638223680851630035">
-
-# <input id="hdnHash" type="hidden" value="5138c843eaa34580f57e1bdb5b9031c8">
-# <input id="hdnIDW" type="hidden" value="638224497267478043">
-
-# <input id="hdnHash" type="hidden" value="de9c3a2fa370b95f16a7412dd1f91b9b">
-
-# <input id="hdnHash" type="hidden" value="bad82fda3a97780eafb37465061af802">
