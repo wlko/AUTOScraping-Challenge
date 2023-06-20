@@ -11,40 +11,42 @@ import json
 # Lo mas importante es que al menos ya dispongo de una forma de conseguir la data que necesito
 
 
-# URL = ["https://ion.inapi.cl/Marca/BuscarMarca.aspx",
-#        "https://ion.inapi.cl/Marca/BuscarMarca.aspx/FindMarcas",
-#        "https://ion.inapi.cl/Marca/BuscarMarca.aspx/FindMarcaByNumeroSolicitud"]
+URL = ["https://ion.inapi.cl/Marca/BuscarMarca.aspx",
+       "https://ion.inapi.cl/Marca/BuscarMarca.aspx/FindMarcas",
+       "https://ion.inapi.cl/Marca/BuscarMarca.aspx/FindMarcaByNumeroSolicitud"]
 
-# with HTMLSession() as s:
-#   response0 = s.get(URL[0], headers=headers)
-#   response0.html.render(timeout=20)
+numeroSolicitud = 1236216
 
-#   hdnIDW0 = response0.html.find('#hdnIDW', first=True).attrs['value']
-#   hdnHash0 = response0.html.find('#hdnHash', first=True).attrs['value']
+with HTMLSession() as s:
+  response0 = s.get(URL[0], headers=headers)
+  response0.html.render(timeout=20)
 
-#   # print(hdnIDW0)
-#   # print(hdnHash0)
+  hdnIDW0 = response0.html.find('#hdnIDW', first=True).attrs['value']
+  hdnHash0 = response0.html.find('#hdnHash', first=True).attrs['value']
 
-#   # cookies = s.cookies.get_dict()
+  # print(hdnIDW0)
+  # print(hdnHash0)
 
-#   dataToPOST1["Hash"] = hdnHash0
-#   dataToPOST1["IDW"] = hdnIDW0
-#   dataToPOST1["param2"] = numeroSolicitud
+  # cookies = s.cookies.get_dict()
 
-#   response1 = s.post(URL[1], headers=headers, json=dataToPOST1)
+  # dataToPOST1["Hash"] = hdnHash0
+  # dataToPOST1["IDW"] = hdnIDW0
+  # dataToPOST1["param2"] = numeroSolicitud
 
-#   # hdnIDW1 = response1.html.find('#hdnIDW', first=True)
-#   # hdnHash1 = response1.html.find('#hdnHash', first=True)
+  # response1 = s.post(URL[1], headers=headers, json=dataToPOST1)
 
-#   # print(hdnIDW1)
-#   # print(hdnHash1)
-#   json_data = json.loads(response1.json()['d'])
+  # hdnIDW1 = response1.html.find('#hdnIDW', first=True)
+  # hdnHash1 = response1.html.find('#hdnHash', first=True)
 
-#   hdnHash1 = json_data['Hash']
-#   hdnSolicitud = json_data['Marcas'][0]['id']
+  # print(hdnIDW1)
+  # print(hdnHash1)
+  # json_data = json.loads(response1.json()['d'])
 
-#   print(response1.status_code)
-#   print(json.dumps(json_data, indent=4))
+  # hdnHash1 = json_data['Hash']
+  # hdnSolicitud = json_data['Marcas'][0]['id']
+
+  # print(response1.status_code)
+  # print(json.dumps(json_data, indent=4))
 
   # dataToPOST2["Hash"] = hdnHash1
   # dataToPOST2["IDW"] = hdnIDW0
