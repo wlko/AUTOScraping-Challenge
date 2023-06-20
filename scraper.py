@@ -9,7 +9,7 @@ class MiniScraper:
         return hdnIDW
     
     def getHdnHash(self, response):
-        soup = BeautifulSoup(response.html, 'html.parser')
+        soup = BeautifulSoup(response, 'html.parser')
         hdnHash = soup.find(id="hdnHash").get('value')
         return hdnHash
     

@@ -7,8 +7,9 @@ class HTTPRequests:
         self.headers = headers
 
     def get(self, url:str):
-        self.session.get(url, headers=self.headers)
-        return self.session.html.render(timeout=20)
+        response = self.session.get(url, headers=self.headers)
+        response.html.render(timeout=20)
+        return response.text
             
     def post(self, url:str, data:dict):
         return self.session.post(url, headers=self.headers, json=data)
