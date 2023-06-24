@@ -1,10 +1,10 @@
 from requests_html import AsyncHTMLSession
 import asyncio
 import time
-from scraper import MiniScraper
-from web_scraper import WebScraper
-from custom_request import HTTPRequests
-from dataForRequests import headers, dataToPOST1, dataToPOST2
+from src.scraper import MiniScraper
+from src.web_scraper import WebScraper
+from src.custom_request import HTTPRequests
+from src.dataForRequests import headers, dataToPOST1, dataToPOST2
 import json
 
 # miSesion = HTTPRequests(headers, parallel=True)
