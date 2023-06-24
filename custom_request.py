@@ -1,56 +1,102 @@
-from requests_html import HTMLSession
+from requests_html import HTMLSession, AsyncHTMLSession
 from random import choice
 
 class HTTPRequests:
 
-    def __init__(self, headers:dict, proxy:bool = False, proxy_list:dict | list = None):
-        self.proxy = proxy
-        self.session = HTMLSession()
+    def __init__(self, headers:dict, proxy_list:dict | list = None, parallel:bool = False):
+        # Tipo de sesión segun configuración pasado por el usuario (Async o no)
+        self.parallel = parallel
+        self.session = HTMLSession() if not parallel else AsyncHTMLSession()
         self.headers = headers
         # Definiendo proxies a utilizar
-        if proxy:
+        self.proxy_list = proxy_list
+
+        if proxy_list != None:
             # Tipos de proxies segun configuración pasado por el usuario (lista o API)
             if proxy_list is dict:
-                self.proxies = proxy_list
+                self.proxy = proxy_list
             else:
-                self.proxies = self.__get_random_proxy(proxy_list)
+                self.proxy = self.__get_random_proxy(proxy_list)
     
     def get(self, url:str):
         # Si se utiliza proxy, se intentará la petición hasta que se obtenga una respuesta 200
-        while True:
-            if self.proxy:
-                proxy_used = self.proxies
-                response = self.session.get(url, headers=self.headers, proxies=proxy_used)
-                print(f"Proxy: {proxy_used}")
+        if self.proxy_list != None:
+            while True:
+                response = self.session.get(url, headers=self.headers, proxies=self.proxy)
+                print(f"Proxy: {self.proxy}")
                 print(response.status_code, response.reason)
-            else:
-                response = self.session.get(url, headers=self.headers)
-                print(response.status_code, response.reason)            
-            if response.status_code == 200:
-                break
+                if response.status_code == 200:
+                    break;
+                else:
+                    if self.proxy_list is list:
+                        self.proxy = self.__get_random_proxy(self.proxy_list)
+                    continue
+        else:
+            response = self.session.get(url, headers=self.headers)
+            print(response.status_code, response.reason)   
 
         response.html.render(timeout=20)
         return response.text
             
     def post(self, url:str, data:dict):
-        while True:
-            if self.proxy:
-                proxy_used = self.proxies
-                response = self.session.post(url, headers=self.headers, json=data, proxies=proxy_used)
-                print(f"Proxy: {proxy_used}")
+        # Si se utiliza proxy, se intentará la petición hasta que se obtenga una respuesta 200
+        if self.proxy_list != None:
+            while True:
+                response = self.session.post(url, headers=self.headers, json=data, proxies=self.proxy)
+                print(f"Proxy: {self.proxy}")
                 print(response.status_code, response.reason)
-            else:
-                response = self.session.post(url, headers=self.headers, json=data)
+                if response.status_code == 200:
+                    break;
+                else:
+                    if self.proxy_list is list:
+                        self.proxy = self.__get_random_proxy(self.proxy_list)
+                    continue
+        else:
+            response = self.session.post(url, headers=self.headers, json=data)
+            print(response.status_code, response.reason)  
+        return response
+    
+    async def async_get(self, url:str):
+        # Si se utiliza proxy, se intentará la petición hasta que se obtenga una respuesta 200
+        if self.proxy_list != None:
+            while True:
+                response = self.session.get(url, headers=self.headers, proxies=self.proxy)
+                print(f"Proxy: {self.proxy}")
                 print(response.status_code, response.reason)
-            if response.status_code == 200:
-                break
+                if response.status_code == 200:
+                    break;
+                else:
+                    if self.proxy_list is list:
+                        self.proxy = self.__get_random_proxy(self.proxy_list)
+                    continue
+        else:
+            response = await self.session.get(url, headers=self.headers)
+            # print(response.status_code, response.reason)   
+
+        await response.html.arender(timeout=20)
+        return response.text
+    
+    async def async_post(self, url:str, data:dict):
+        # Si se utiliza proxy, se intentará la petición hasta que se obtenga una respuesta 200
+        if self.proxy_list != None:
+            while True:
+                response = await self.session.post(url, headers=self.headers, json=data, proxies=self.proxy)
+                print(f"Proxy: {self.proxy}")
+                print(response.status_code, response.reason)
+                if response.status_code == 200:
+                    break;
+                else:
+                    if self.proxy_list is list:
+                        self.proxy = self.__get_random_proxy(self.proxy_list)
+                    continue
+        else:
+            response = await self.session.post(url, headers=self.headers, json=data)
+            print(response.status_code, response.reason)  
         return response
     
     def __get_random_proxy(proxy_list:list):
         return {"https": choice(proxy_list)}
-        
-
-
+    
 # def concurrent_requests (
 #         nrosRegistros:list = [],
 #         headers:dict = {}, 
