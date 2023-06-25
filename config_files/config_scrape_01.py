@@ -1,7 +1,11 @@
 import os
+from datetime import date
+
+today = date.today()
+todayfmt = today.strftime("%d_%m_%Y")
 
 # Default parameters
-class args:    
+class args:
     # Opción para realizar todas las peticiones de manera asincrónica
     PARALLEL = False
 
@@ -12,11 +16,11 @@ class args:
     #     }
 
     # Definir acá los registros a buscar
-    REGISTROS = ['1236216', '1236222', '1236223', '1236224']
+    REGISTROS = ['1236216', '1236222', '1236223', '1236224', '1236226', '1236227', '1236275', '1236319', '1236450','1236470', '1236472', '1236471', '1236482']
     
-    SAVE_FILE_NAME = "scrape_24_06_2023"
+    SAVE_FILE_NAME = f"scrape_{todayfmt}"
 
-    EXP_DIR =  f"{os.path.abspath(os.getcwd())}\data"
+    EXP_DIR =  f"{os.path.abspath(os.getcwd())}\extracted_data"
 
     HEADERS = {
         'Accept': 'application/json, text/javascript, */*; q=0.01',

@@ -11,35 +11,55 @@ class WebScraper(MiniScraper):
         self.session = session
     
     def getData(self, nroRegisto:int):
+        intentos = 3
 
-        response1 = self.session.get("https://ion.inapi.cl/Marca/BuscarMarca.aspx")
+        while intentos > 0:
+            try:
+                response1 = self.session.get("https://ion.inapi.cl/Marca/BuscarMarca.aspx")
 
-        self.session.dataPost1["Hash"] = self.getHdnHash(response1)
-        self.session.dataPost1["IDW"] = self.getHdnIDW(response1)
-        self.session.dataPost1["param2"] = nroRegisto
+                self.session.dataPost1["Hash"] = self.getHdnHash(response1)
+                self.session.dataPost1["IDW"] = self.getHdnIDW(response1)
+                self.session.dataPost1["param2"] = nroRegisto
 
-        self.session.dataPost2["IDW"] = self.getHdnIDW(response1)
+                self.session.dataPost2["IDW"] = self.getHdnIDW(response1)
 
-        response2 = self.session.post("https://ion.inapi.cl/Marca/BuscarMarca.aspx/FindMarcas", data=self.session.dataPost1)
+                response2 = self.session.post("https://ion.inapi.cl/Marca/BuscarMarca.aspx/FindMarcas", data=self.session.dataPost1)
 
-        self.session.dataPost2["numeroSolicitud"], self.session.dataPost2["Hash"] = self.getHdnSolicitudAndHdnHash(response2)
+                self.session.dataPost2["numeroSolicitud"], self.session.dataPost2["Hash"] = self.getHdnSolicitudAndHdnHash(response2)
 
-        response3 = self.session.post("https://ion.inapi.cl/Marca/BuscarMarca.aspx/FindMarcaByNumeroSolicitud", data=self.session.dataPost2)
+                response3 = self.session.post("https://ion.inapi.cl/Marca/BuscarMarca.aspx/FindMarcaByNumeroSolicitud", data=self.session.dataPost2)
 
-        data_json = response3.json()['d']
-        return json.loads(data_json)
+                data_json = response3.json()['d']
+
+                return json.loads(data_json)
+            
+            except Exception as e:
+                print(f"\nError en la solicitud - ERROR {e}\nReintentando en 5 segundos...\n")
+                intentos -= 1
+                time.sleep(5)
+        return None
     
     def getMultipleData(self, solicitudes:list):
         data = []
         start = time.perf_counter()
+
         for solicitud in solicitudes:
             start_reg = time.perf_counter()
+
             print(f"\nSolicitud: {solicitud}")
-            data.append(self.getData(solicitud))
+            solicitudData = self.getData(solicitud)
+            if solicitudData != None:
+                data.append(solicitudData)
+            else:
+                print(f"\nError en la solicitud: {solicitud}")
+                continue
+
             end_reg = time.perf_counter()
             print(f"\nSolicitud: {solicitud} - {end_reg-start_reg} segundos")
+
         end = time.perf_counter()
         print(f"\n[>] Tiempo total: {end-start} segundos [<]".upper())
+        
         return data
 
     # async def __asyncSetData(self, dataToSet:dict, nroRegistro:int):
